@@ -76,4 +76,4 @@ These will be embedded and stored in a vector database to support semantic retri
 
 - **Trend summaries over time** (e.g., monthly category-level spend)
 - Build a basic **personal finance dashboard** powered by the LLM
-"""
+  
