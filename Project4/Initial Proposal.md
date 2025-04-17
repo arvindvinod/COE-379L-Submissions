@@ -1,4 +1,4 @@
-                                                          Initial Proposal: Personal Finance Q&A with Retrieval-Augmented Generation
+Initial Proposal: Personal Finance Q&A with Retrieval-Augmented Generation
 1. Introduction and Problem Statement
 
 I’ve been manually maintaining a personal finance spreadsheet in Google Sheets for over a year now. While it helps me stay on top of my expenses, the process is tedious and easy to fall behind on. I started using Sheets because most personal finance apps rely on Plaid for automatic bank integration — and while Plaid works decently for large banks, it doesn’t support the mix of big banks and credit unions I use. On top of that, most apps I tried had frustrating or cluttered user experiences, making them more work than help. So I stuck with Google Sheets.
