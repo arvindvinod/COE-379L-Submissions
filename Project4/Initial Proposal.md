@@ -1,74 +1,105 @@
-Initial Proposal: Personal Finance Q&A with Retrieval-Augmented Generation
-1. Introduction and Problem Statement
+# 💸 Personal Finance Q&A with Retrieval-Augmented Generation (RAG)
 
-I’ve been manually maintaining a personal finance spreadsheet in Google Sheets for over a year now. While it helps me stay on top of my expenses, the process is tedious and easy to fall behind on. I started using Sheets because most personal finance apps rely on Plaid for automatic bank integration — and while Plaid works decently for large banks, it doesn’t support the mix of big banks and credit unions I use. On top of that, most apps I tried had frustrating or cluttered user experiences, making them more work than help. So I stuck with Google Sheets.
+## Overview
 
-I've wanted to build my own app for a while — something clean, private, and tailored to how I think about money. But for now, I want to focus on the LLM side of the problem: How can we make this spreadsheet more intelligent?
+This project explores how Large Language Models (LLMs) can be used to make personal finance management more intelligent and conversational through **Retrieval-Augmented Generation (RAG)**.
 
-This project aims to build a natural language Q&A system over my financial records using Retrieval-Augmented Generation (RAG). The system should let me ask questions like:
+Like many others, I’ve been manually maintaining a personal finance spreadsheet in Google Sheets. While this gives me full control over my data, it's time-consuming and easy to fall behind. I initially adopted this workflow because most personal finance apps rely on **Plaid**, which doesn’t work well with my mix of big banks and credit unions. On top of that, the user experience of existing apps was often cluttered, buggy, or lacked support for manual entry — especially for **cash** transactions and **multi-currency tracking**.
 
-“How much did I spend on groceries last month?”
-“Did I spend more on subscriptions this month than last?”
-“What were my top 3 spending categories this quarter?”
+I've wanted to build my own app for a while — something clean, privacy-respecting, and tailored to how *I* think about money. But for now, this project focuses on the **LLM** side of the problem:  
+> 🔍 *How can we make my spreadsheet usable for natural language Q&A?*
 
-These kinds of insights often take several filters, formulas, or pivot tables to get — and an LLM interface could dramatically reduce that friction.
+---
 
+## 🧠 What This Project Does
 
+This system enables questions like:
 
-2. Data Sources
-   
-The primary data source is my personal finance spreadsheet, which I maintain manually. Each entry includes the following fields:
+- “How much did I spend on groceries last month?”
+- “Did I spend more on subscriptions this month than last?”
+- “What were my top 3 spending categories this quarter?”
+- “How much cash did I spend in India during summer break?”
 
-Date: When the transaction occurred
-Place: Where I spent the money (merchant name or context)
-Amount in USD: The amount spent in USD (primary base)
-Amount in INR: Converted amount using Google Finance
-Category: Expense category (e.g., groceries, rent, travel)
-Source: The source of the money — dropdown for bank accounts, credit cards, or cash
+Using a **RAG pipeline**, it retrieves relevant transactions from my records and passes them to an LLM to generate a natural language response. This removes the friction of writing filters, pivot tables, or formulas just to gain everyday insights.
 
-Because I maintain accounts in both the U.S. and India, I track transactions in multiple currencies. In 2024, I also tracked NTD (Taiwan Dollar) and THB (Thai Baht) since I studied abroad in Taiwan and spent time in Thailand. I used the Google Finance function within the spreadsheet to dynamically convert between currencies, depending on the transaction’s context.Cash spending is also an essential part of this system — and it's another major reason why I avoided finance apps with poor support for manual entries. Tracking cash (especially while abroad) was critical to getting a complete picture of my finances.
+---
 
-For the RAG system, each transaction will be converted to natural-language entries, such as:
-“On February 17th, I spent ₹820 ($9.60) at a coffee shop in Chennai using my Axis Bank Savings Account. It was categorized as ‘Eating/Drinking Out’.”
+## 📊 Data Source
 
-These will be embedded and stored in a vector database to support semantic retrieval and LLM-powered reasoning. The system should be able to handle queries involving:
-- Currency awareness and conversion, meaning ability to set primary currency so that if spending with other currencies, a converted figure in the primary currency also appers
-- Temporal context (“last month,” “Q1 2024”)
-- Category- or source-based filtering
-- Aggregations (e.g., totals or comparisons)
+The primary dataset is my personal finance spreadsheet, which I maintain manually. Each transaction includes:
 
+- **Date**: When the transaction occurred  
+- **Place**: Where I spent the money (merchant name or context)  
+- **Amount in USD**: Primary amount (since I live in the U.S.)  
+- **Amount in INR**: Converted amount using `GOOGLEFINANCE()`  
+- **Category**: Expense type (e.g., groceries, rent, travel)  
+- **Source**: Which account/card/cash (dropdown)
 
+### 🌐 Currency Tracking
 
-3. Methods and Technologies
-   
-Core ML Stack
-- Embedding model: all-MiniLM-L6-v2 (via SentenceTransformers)
-- Vector database: FAISS
-- Language model: Open-source model (like Mistral 7B) or API-based LLM (like Claude/GPT)
-- Pipeline: RAG-style system with user query → retrieve relevant transactions → generate natural language answer
-- Evaluation: Manual + automated evaluation of answer accuracy and hallucination rate
+I track spending in multiple currencies — mainly:
 
-Tools
-Python + Jupyter notebooks
+- 🇺🇸 USD (U.S. expenses)
+- 🇮🇳 INR (India-based accounts and trips)
+- 🇹🇼 NTD (Study abroad in Taiwan)
+- 🇹🇭 THB (Travel in Thailand)
 
-Optional: Streamlit or Gradio for a simple UI demo
+For each transaction, I use formulas in Sheets to convert the primary currency into others using exchange rates from `GOOGLEFINANCE()`. This allows me to unify and compare spending across borders. Manual tracking is especially important for **cash**, which I spent heavily while abroad.
 
+---
 
+## 🔍 Example Conversion
 
-4. Products to Be Delivered
-   
-- Jupyter notebooks for:
-    - Data parsing and preprocessing from spreadsheet
-    - Vector store creation and document embedding
-    - RAG-based Q&A pipeline
-    - Example prompts and output evaluation
-- Projecy 4 GitHub repository
-- Final written report (≤10 pages)
-- 10 minute video walkthrough
+To make the data usable by the LLM, transactions are turned into natural language entries like:
 
+> _“On February 17th, I spent ₹820 ($9.60) at a coffee shop in Chennai using my Axis Bank Savings Account. It was categorized as ‘Eating/Drinking Out’.”_
 
+These entries are embedded and stored in a vector database to support semantic retrieval.
 
-  5. Stretch Goals
-     
-- Trend summaries over time (e.g., monthly category-level spend)
-- Build a basic personal finance dashboard powered by the LLM
+---
+
+## 🛠 Methods and Technologies
+
+### 🔧 Core Stack
+- **Embedding model**: [`all-MiniLM-L6-v2`](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)
+- **Vector store**: FAISS (local)
+- **Language model**: Open-source LLM (e.g., Mistral 7B) or API (GPT/Claude)
+- **Pipeline**: Query → Retrieve similar entries → Generate answer
+- **Eval**: Manual accuracy checks + basic hallucination tracking
+
+### 📦 Tools
+- `Python` + `pandas` for data handling
+- `SentenceTransformers` for embedding
+- `FAISS` for vector storage
+- `Jupyter Notebook` for experiments and demos
+- *(Optional)* `Streamlit` or `Gradio` for basic UI
+
+---
+
+## 🚀 Deliverables
+
+- 📓 Jupyter notebooks:
+  - Data preprocessing + parsing from Google Sheets
+  - Embedding + vector store creation
+  - RAG-based Q&A pipeline
+  - Prompt examples + response evaluation
+- 📁 GitHub repo
+- 📝 Final report (≤10 pages)
+- 🎥 10-minute video walkthrough
+
+---
+
+## ✨ Stretch Goals
+
+- Time-based trends (e.g., monthly spend by category)
+- Summarization (e.g., "Give me a weekly spending report")
+- A lightweight finance dashboard UI with natural language support
+
+---
+
+## 💬 Why This Matters
+
+Spreadsheets are powerful, but not intuitive. By combining the structure of my personal data with the reasoning capabilities of LLMs, I hope to build a new kind of interface — one that makes managing money **smarter, simpler, and a lot more human**.
+
+---
+
