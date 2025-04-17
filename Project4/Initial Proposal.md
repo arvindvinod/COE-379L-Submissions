@@ -16,6 +16,7 @@ These kinds of insights often take several filters, formulas, or pivot tables to
 
 
 2. Data Sources
+   
 The primary data source is my personal finance spreadsheet, which I maintain manually. Each entry includes the following fields:
 
 Date: When the transaction occurred
@@ -39,6 +40,7 @@ These will be embedded and stored in a vector database to support semantic retri
 
 
 3. Methods and Technologies
+   
 Core ML Stack
 - Embedding model: all-MiniLM-L6-v2 (via SentenceTransformers)
 - Vector database: FAISS
@@ -54,6 +56,7 @@ Optional: Streamlit or Gradio for a simple UI demo
 
 
 4. Products to Be Delivered
+   
 - Jupyter notebooks for:
     - Data parsing and preprocessing from spreadsheet
     - Vector store creation and document embedding
@@ -66,5 +69,6 @@ Optional: Streamlit or Gradio for a simple UI demo
 
 
   5. Stretch Goals
+     
 - Trend summaries over time (e.g., monthly category-level spend)
 - Build a basic personal finance dashboard powered by the LLM
